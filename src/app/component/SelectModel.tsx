@@ -1,6 +1,8 @@
 "use client";
 
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { modelTypeAtom, resumeAtom } from "./atom";
 
 const Container = styled.div`
   width: 266px;
@@ -19,14 +21,34 @@ const Container = styled.div`
 const Button = styled.button`
   width: 140px;
   height: 30px;
+  &:disabled {
+  }
 `;
 
 const SelectModel = () => {
+  const [modelType, setModelType] = useRecoilState(modelTypeAtom);
+  const resumeType = useRecoilValue(resumeAtom);
+
   return (
     <>
+      <div>{modelType}</div>
       <Container>
-        <Button>Yolo 모델 선택</Button>
-        <Button>OCR 모델 선택</Button>
+        <Button
+          onClick={() => {
+            setModelType("YOLO");
+          }}
+          disabled={resumeType}
+        >
+          Yolo 모델 선택
+        </Button>
+        <Button
+          onClick={() => {
+            setModelType("OCR");
+          }}
+          disabled={resumeType}
+        >
+          OCR 모델 선택
+        </Button>
       </Container>
     </>
   );
