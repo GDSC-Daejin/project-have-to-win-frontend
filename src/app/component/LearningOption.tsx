@@ -2,11 +2,12 @@
 
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { batchAtom, epochsAtom, lr0Atom } from "./atom";
+import { batchAtom, epochsAtom, lr0Atom, workStateAtom } from "./atom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Button,
   Container,
+  ContainerPadding,
   Curtain,
   Input,
   InputBox,
@@ -55,6 +56,7 @@ const LearningOption = () => {
   const [epochs, setEpochs] = useRecoilState(epochsAtom);
   const [batch, setBatch] = useRecoilState(batchAtom);
   const [lr0, setLr0] = useRecoilState(lr0Atom);
+  const [workState, setWorkState] = useRecoilState(workStateAtom);
 
   const { data } = useQuery({
     queryKey: ["kakaoLogin"],
@@ -96,36 +98,38 @@ const LearningOption = () => {
         {/* <ButtonContainer>
           <LearnButton onClick={handleTrain}>모델 학습 버튼</LearnButton>
         </ButtonContainer> */}
-        <Curtain
-          display={hoverState}
-          onMouseEnter={() => setHoverState("none")}
-        />
-        <Container
-          onMouseLeave={() => setHoverState("block")}
-          padding="120px 10px"
-        >
-          <OptionBox>
-            <InputBox>
-              <Label>에포크</Label>
-              <Input type="number" defaultValue={epochs} />
-            </InputBox>
-            <InputBox>
-              <Label>배치크기</Label>
-              <Select defaultValue={batch}>
-                <option value={16}>16</option>
-                <option value={32}>32</option>
-                <option value={64}>64</option>
-                <option value={128}>128</option>
-                <option value={256}>256</option>
-                <option value={512}>512</option>
-              </Select>
-            </InputBox>
-            <InputBox>
-              <Label>학습률</Label>
-              <Input type="number" step={0.00001} defaultValue={lr0} />
-            </InputBox>
-          </OptionBox>
-          <Button>기본값 초기화</Button>
+
+        <Container onMouseLeave={() => setHoverState("block")}>
+          <ContainerPadding padding="120px 10px">
+            <OptionBox>
+              <InputBox>
+                <Label>에포크</Label>
+                <Input type="number" defaultValue={epochs} />
+              </InputBox>
+              <InputBox>
+                <Label>배치크기</Label>
+                <Select defaultValue={batch}>
+                  <option value={16}>16</option>
+                  <option value={32}>32</option>
+                  <option value={64}>64</option>
+                  <option value={128}>128</option>
+                  <option value={256}>256</option>
+                  <option value={512}>512</option>
+                </Select>
+              </InputBox>
+              <InputBox>
+                <Label>학습률</Label>
+                <Input type="number" step={0.00001} defaultValue={lr0} />
+              </InputBox>
+            </OptionBox>
+            <Button>기본값 초기화</Button>
+          </ContainerPadding>
+          {workState !== 1 && (
+            <Curtain
+              display={hoverState}
+              onMouseEnter={() => setHoverState("none")}
+            />
+          )}
         </Container>
       </div>
     </>
