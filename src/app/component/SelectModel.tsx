@@ -3,43 +3,31 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { modelTypeAtom, resumeAtom } from "./atom";
-
-const Container = styled.div`
-  width: 266px;
-  height: 190px;
-  background-color: lightgray;
-
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 50px;
-`;
-
-const Button = styled.button`
-  width: 140px;
-  height: 30px;
-  &:disabled {
-  }
-`;
+import { Button, Container, Curtain } from "./componentCSS";
+import { useState } from "react";
 
 const SelectModel = () => {
+  const [hoverState, setHoverState] = useState("block");
   const [modelType, setModelType] = useRecoilState(modelTypeAtom);
   const resumeType = useRecoilValue(resumeAtom);
 
   return (
-    <>
-      <div>{modelType}</div>
-      <Container>
+    <div>
+      <Curtain
+        display={hoverState}
+        onMouseEnter={() => setHoverState("none")}
+      />
+      <Container
+        onMouseLeave={() => setHoverState("block")}
+        padding="200px 10px"
+      >
         <Button
           onClick={() => {
             setModelType("YOLO");
           }}
           disabled={resumeType}
         >
-          Yolo 모델 선택
+          Yolo 모델학습
         </Button>
         <Button
           onClick={() => {
@@ -47,10 +35,10 @@ const SelectModel = () => {
           }}
           disabled={resumeType}
         >
-          OCR 모델 선택
+          OCR 모델학습
         </Button>
       </Container>
-    </>
+    </div>
   );
 };
 
