@@ -1,4 +1,3 @@
-import Image from "next/image";
 import styles from "./page.module.css";
 import LearningOption from "./component/LearningOption";
 import SelectModel from "./component/SelectModel";
