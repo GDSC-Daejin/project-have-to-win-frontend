@@ -3,13 +3,23 @@
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { batchAtom, epochsAtom, lr0Atom } from "./atom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  Button,
+  Container,
+  Curtain,
+  Input,
+  InputBox,
+  Label,
+  Select,
+} from "./componentCSS";
+import { useState } from "react";
 
 interface trainData {
-  epochs: number;
-  batch: number;
-  lr0: number;
-  resume: boolean;
+  epochs?: number;
+  batch?: number;
+  lr0?: number;
+  resume?: boolean;
 }
 
 const ButtonContainer = styled.div`
@@ -21,37 +31,16 @@ const ButtonContainer = styled.div`
   align-items: center;
 `;
 
-const InputContainer = styled.div`
-  width: 266px;
-  height: 330px;
-  background-color: lightgray;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const InputBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 225px;
-  justify-content: space-between;
-  margin: 10px;
-`;
-
-const Input = styled.input`
-  width: 140px;
-  height: 30px;
-`;
-
-const Select = styled.select`
-  width: 140px;
-  height: 30px;
-`;
-
 const LearnButton = styled.button`
   width: 140px;
   height: 30px;
+`;
+
+const OptionBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 200px;
 `;
 
 const ResetButton = styled.button`
@@ -62,13 +51,27 @@ const ResetButton = styled.button`
 `;
 
 const LearningOption = () => {
+  const [hoverState, setHoverState] = useState("block");
   const [epochs, setEpochs] = useRecoilState(epochsAtom);
   const [batch, setBatch] = useRecoilState(batchAtom);
   const [lr0, setLr0] = useRecoilState(lr0Atom);
 
+  const { data } = useQuery({
+    queryKey: ["kakaoLogin"],
+    queryFn: async () => {
+      return (await fetch(`http://122.47.121.165:8080/stream_logs`)).json();
+    },
+  });
+
+  console.log(data);
+
   const mutation = useMutation({
     mutationFn: (newData: trainData) => {
-      return fetch(`http://122.47.121.165:8080/yolo_train`, {
+      //랄라
+      // return fetch(`http://122.47.121.165:8080/trocr_train`, {
+      return fetch(`http://122.47.121.165:8080/stream_logs`, {
+        //파스칼
+        // return fetch(`http://213.173.105.10:14775/yolo_train2`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,31 +92,39 @@ const LearningOption = () => {
 
   return (
     <>
-      <ButtonContainer>
-        <LearnButton onClick={handleTrain}>모델 학습 버튼</LearnButton>
-      </ButtonContainer>
-      <InputContainer>
-        <InputBox>
-          <div>에포크: </div>
-          <Input type="number" defaultValue={epochs} />
-        </InputBox>
-        <InputBox>
-          <div>배치크기: </div>
-          <Select defaultValue={batch}>
-            <option value={16}>16</option>
-            <option value={32}>32</option>
-            <option value={64}>64</option>
-            <option value={128}>128</option>
-            <option value={256}>256</option>
-            <option value={512}>512</option>
-          </Select>
-        </InputBox>
-        <InputBox>
-          <div>학습률: </div>
-          <Input type="number" step={0.00001} defaultValue={lr0} />
-        </InputBox>
-        <ResetButton>기본값 초기화</ResetButton>
-      </InputContainer>
+      <div>
+        {/* <ButtonContainer>
+          <LearnButton onClick={handleTrain}>모델 학습 버튼</LearnButton>
+        </ButtonContainer> */}
+        <Curtain
+          display={hoverState}
+          onMouseEnter={() => setHoverState("none")}
+        />
+        <Container onMouseLeave={() => setHoverState("block")}>
+          <OptionBox>
+            <InputBox>
+              <Label>에포크</Label>
+              <Input type="number" defaultValue={epochs} />
+            </InputBox>
+            <InputBox>
+              <Label>배치크기</Label>
+              <Select defaultValue={batch}>
+                <option value={16}>16</option>
+                <option value={32}>32</option>
+                <option value={64}>64</option>
+                <option value={128}>128</option>
+                <option value={256}>256</option>
+                <option value={512}>512</option>
+              </Select>
+            </InputBox>
+            <InputBox>
+              <Label>학습률</Label>
+              <Input type="number" step={0.00001} defaultValue={lr0} />
+            </InputBox>
+          </OptionBox>
+          <Button>기본값 초기화</Button>
+        </Container>
+      </div>
     </>
   );
 };
