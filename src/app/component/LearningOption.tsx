@@ -100,7 +100,10 @@ const LearningOption = () => {
           display={hoverState}
           onMouseEnter={() => setHoverState("none")}
         />
-        <Container onMouseLeave={() => setHoverState("block")}>
+        <Container
+          onMouseLeave={() => setHoverState("block")}
+          padding="120px 10px"
+        >
           <OptionBox>
             <InputBox>
               <Label>에포크</Label>
