@@ -1,10 +1,22 @@
 .main {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 6rem;
-  min-height: 100vh;
+  padding: 4rem;
+  width: auto;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+}
+
+.main::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.main::-webkit-scrollbar-thumb {
+  background: skyblue;
+  border-radius: 12px 12px 12px 12px;
 }
 
 .description {
@@ -51,7 +63,9 @@
   border-radius: var(--border-radius);
   background: rgba(var(--card-rgb), 0);
   border: 1px solid rgba(var(--card-border-rgb), 0);
-  transition: background 200ms, border 200ms;
+  transition:
+    background 200ms,
+    border 200ms;
 }
 
 .card span {
