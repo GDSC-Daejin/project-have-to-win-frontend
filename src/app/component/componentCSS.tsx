@@ -9,7 +9,7 @@ export const Container = styled.div<{ padding?: string }>`
   position: relative;
   border-style: solid;
   border-width: 1px;
-  border-color: rgb(180, 180, 180);
+  border-color: skyblue;
   border-radius: 8px;
   width: 280px;
   height: 500px;
