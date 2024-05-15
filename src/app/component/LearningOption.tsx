@@ -15,6 +15,7 @@ import {
   Select,
 } from "./componentCSS";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface trainData {
   epochs?: number;
@@ -58,14 +59,14 @@ const LearningOption = () => {
   const [lr0, setLr0] = useRecoilState(lr0Atom);
   const [workState, setWorkState] = useRecoilState(workStateAtom);
 
+  const { handleSubmit, register, getValues, setValue } = useForm();
+
   const { data } = useQuery({
     queryKey: ["kakaoLogin"],
     queryFn: async () => {
       return (await fetch(`http://122.47.121.165:8080/stream_logs`)).json();
     },
   });
-
-  console.log(data);
 
   const mutation = useMutation({
     mutationFn: (newData: trainData) => {
@@ -92,6 +93,30 @@ const LearningOption = () => {
     });
   };
 
+  const handleOptionReset = () => {
+    setEpochs(50);
+    setBatch(16);
+    setLr0(0.001);
+    setValue("epochs", 50);
+    setValue("batch", 16);
+    setValue("lr0", 0.001);
+  };
+
+  // console.log(
+  //   "epochsAtom: ",
+  //   epochs,
+  //   "batchAtom: ",
+  //   batch,
+  //   "lrAtom: ",
+  //   lr0,
+  //   "getValueEpochs: ",
+  //   getValues("epochs"),
+  //   "getValueBatch: ",
+  //   getValues("batch"),
+  //   "getValueLr0: ",
+  //   getValues("lr0")
+  // );
+
   return (
     <>
       <div>
@@ -104,11 +129,26 @@ const LearningOption = () => {
             <OptionBox>
               <InputBox>
                 <Label>에포크</Label>
-                <Input type="number" defaultValue={epochs} />
+                <Input
+                  type="number"
+                  defaultValue={epochs}
+                  {...register("epochs", {
+                    onChange: () => {
+                      setEpochs(getValues("epochs"));
+                    },
+                  })}
+                />
               </InputBox>
               <InputBox>
                 <Label>배치크기</Label>
-                <Select defaultValue={batch}>
+                <Select
+                  defaultValue={batch}
+                  {...register("batch", {
+                    onChange: () => {
+                      setBatch(getValues("batch"));
+                    },
+                  })}
+                >
                   <option value={16}>16</option>
                   <option value={32}>32</option>
                   <option value={64}>64</option>
@@ -119,10 +159,19 @@ const LearningOption = () => {
               </InputBox>
               <InputBox>
                 <Label>학습률</Label>
-                <Input type="number" step={0.00001} defaultValue={lr0} />
+                <Input
+                  type="number"
+                  step={0.00001}
+                  defaultValue={lr0}
+                  {...register("lr0", {
+                    onChange: () => {
+                      setLr0(getValues("lr0"));
+                    },
+                  })}
+                />
               </InputBox>
             </OptionBox>
-            <Button>기본값 초기화</Button>
+            <Button onClick={() => handleOptionReset()}>기본값 초기화</Button>
           </ContainerPadding>
           {workState !== 1 && (
             <Curtain
