@@ -27,6 +27,6 @@ export const modelTypeAtom = atom<string>({
 
 export const workStateAtom = atom<number>({
   key: "workState",
-  // 0.Upload 1.Prepare 2.Stop 3.Complete
+  // 0.Upload 1.Prepare 2.Stop 3.Complete 4.Wait
   default: 0,
 });
