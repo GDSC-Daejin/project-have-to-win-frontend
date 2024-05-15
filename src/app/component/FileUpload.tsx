@@ -33,7 +33,7 @@ const FileListBox = styled.div`
 // 멀티파트 react qeury 사용하기
 //https://velog.io/@2pandi/react-query-useMutation%EC%9C%BC%EB%A1%9C-FormData-%EC%9A%94%EC%B2%AD-%EB%B3%B4%EB%82%B4%EA%B8%B0
 const FileUpload = () => {
-  const { handleSubmit, register, getValues } = useForm();
+  const { register, getValues } = useForm();
   const [hoverState, setHoverState] = useState("block");
   const [fileData, setFileData] = useState("");
 
