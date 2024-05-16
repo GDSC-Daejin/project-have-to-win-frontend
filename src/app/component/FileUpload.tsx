@@ -35,14 +35,15 @@ const FileListBox = styled.div`
 const FileUpload = () => {
   const { register, getValues } = useForm();
   const [hoverState, setHoverState] = useState("block");
-  const [fileData, setFileData] = useState("");
+  const [fileDataName, setFileDataName] = useState("");
+  const [fileData, setFileData] = useState();
 
   const [workState, setWorkState] = useRecoilState(workStateAtom);
 
   // 파일 삭제
   const mutationDeleteFile = useMutation({
     mutationFn: () => {
-      return fetch(`http://122.47.121.165:8080/delete_uploads`, {
+      return fetch(`http://213.173.105.10:14775/delete_uploads`, {
         method: "POST",
       });
     },
@@ -53,13 +54,10 @@ const FileUpload = () => {
 
   // 파일 업로드
   const mutationUploadFile = useMutation({
-    mutationFn: (newData: File) => {
-      return fetch(`http://122.47.121.165:8080/upload`, {
+    mutationFn: () => {
+      return fetch(`http://213.173.105.10:14775/upload`, {
         method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        body: newData,
+        body: fileData,
       });
     },
     onSuccess: () => {
@@ -70,42 +68,50 @@ const FileUpload = () => {
   // 전처리
   const mutationPreprocessFile = useMutation({
     mutationFn: () => {
-      return fetch(`http://122.47.121.165:8080/preprocess`, {
+      return fetch(`http://213.173.105.10:14775/preprocess`, {
         method: "POST",
       });
     },
   });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFileData(e.target.fileInput.files[0]);
+    console.log(e.target.fileInput.files[0]);
+    setFileDataName(getValues("fileInput")?.[0]?.name);
+    setWorkState(1);
+    mutationDeleteFile.mutate();
+  };
 
   return (
     <div>
       <Container onMouseLeave={() => setHoverState("block")}>
         <ContainerPadding>
           <GoFileDirectoryFill color={"skyblue"} size={100} />
-          <form>
-            {fileData === "" ? (
+          <form onSubmit={(e) => handleSubmit(e)} encType="multipart/form-data">
+            {fileDataName === "" ? (
               <label htmlFor="fileInput">
                 <FileButton>파일 업로드</FileButton>
               </label>
             ) : (
               <label htmlFor="fileInput">
                 <FileListBox>
-                  {getValues("fileInput") ? fileData : ""}
+                  {getValues("fileInput") ? fileDataName : ""}
                 </FileListBox>
               </label>
             )}
 
             <FileInput
               type="file"
-              accept=".zip, .apk, .rar, .7z, .tar"
+              accept=".zip"
               id="fileInput"
               {...register("fileInput", {
                 onChange: () => {
-                  setFileData(getValues("fileInput")?.[0]?.name);
-                  setWorkState(1);
-                  mutationDeleteFile.mutate();
+                  setFileDataName(getValues("fileInput")?.[0]?.name);
                 },
               })}
             />
+            <Button type="submit">파일 선택완료</Button>
           </form>
         </ContainerPadding>
         {workState !== 0 && (
