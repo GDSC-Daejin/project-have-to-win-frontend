@@ -57,6 +57,9 @@ const FileUpload = () => {
     mutationFn: () => {
       return fetch(`http://213.173.105.10:14775/upload`, {
         method: "POST",
+        headers: {
+          "content-type": "multipart/form-data",
+        },
         body: fileData,
       });
     },
