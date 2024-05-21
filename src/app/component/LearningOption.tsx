@@ -64,15 +64,15 @@ const LearningOption = () => {
   const { data } = useQuery({
     queryKey: ["kakaoLogin"],
     queryFn: async () => {
-      return (await fetch(`http://213.173.105.10:14775/stream_logs`)).json();
+      return (await fetch(`http://122.47.121.165:8070/stream_logs`)).json();
     },
   });
 
   const mutation = useMutation({
     mutationFn: (newData: trainData) => {
       //랄라
-      // return fetch(`http://122.47.121.165:8080/trocr_train`, {
-      return fetch(`http://213.173.105.10:14775/stream_logs`, {
+      // return fetch(`http://122.47.121.165:8070/trocr_train`, {
+      return fetch(`http://122.47.121.165:8070/stream_logs`, {
         //파스칼
         // return fetch(`http://213.173.105.10:14775/yolo_train2`, {
         method: "POST",

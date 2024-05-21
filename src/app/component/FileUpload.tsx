@@ -43,7 +43,7 @@ const FileUpload = () => {
   // 파일 삭제
   const mutationDeleteFile = useMutation({
     mutationFn: () => {
-      return fetch(`http://213.173.105.10:14775/delete_uploads`, {
+      return fetch(`http://122.47.121.165:8070/delete_uploads`, {
         method: "POST",
       });
     },
@@ -55,7 +55,7 @@ const FileUpload = () => {
   // 파일 업로드
   const mutationUploadFile = useMutation({
     mutationFn: () => {
-      return fetch(`http://213.173.105.10:14775/upload`, {
+      return fetch(`http://122.47.121.165:8070/upload`, {
         method: "POST",
         body: fileData,
       });
@@ -68,16 +68,22 @@ const FileUpload = () => {
   // 전처리
   const mutationPreprocessFile = useMutation({
     mutationFn: () => {
-      return fetch(`http://213.173.105.10:14775/preprocess`, {
+      return fetch(`http://122.47.121.165:8070/preprocess`, {
         method: "POST",
       });
     },
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
-    setFileData(e.target.fileInput.files[0]);
-    console.log(e.target.fileInput.files[0]);
+
+    const formData = new FormData();
+    formData.append("file", e.target.fileInput.files[0]);
+    setFileData(formData);
+    for (var key of formData.keys()) {
+      console.log(key);
+    }
+
     setFileDataName(getValues("fileInput")?.[0]?.name);
     setWorkState(1);
     mutationDeleteFile.mutate();

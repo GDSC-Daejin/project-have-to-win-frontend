@@ -12,6 +12,7 @@ import {
   workStateAtom,
 } from "./atom";
 import { ButtonCSS } from "./componentCSS";
+import { useState } from "react";
 
 interface trainData {
   epochs: number;
@@ -77,21 +78,22 @@ const PrintLog = () => {
   const [workState, setWorkState] = useRecoilState(workStateAtom);
   const [resume, setResume] = useRecoilState(resumeAtom);
   const [modelType, setModelType] = useRecoilState(modelTypeAtom);
+  const [callLog, setCallLog] = useState(0);
 
   const epochs = useRecoilValue(epochsAtom);
   const batch = useRecoilValue(batchAtom);
   const lr0 = useRecoilValue(lr0Atom);
 
   const { data } = useQuery({
-    queryKey: ["Log"],
+    queryKey: ["Log", callLog],
     queryFn: async () => {
-      return (await fetch(`http://213.173.105.10:14775/stream_logs`)).json();
+      return (await fetch(`http://122.47.121.165:8070/stream_logs`)).json();
     },
   });
 
   const mutationYolo = useMutation({
     mutationFn: (newData: trainData) => {
-      return fetch(`http://213.173.105.10:14775/yolo_train`, {
+      return fetch(`http://122.47.121.165:8070/yolo_train`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,6 +102,8 @@ const PrintLog = () => {
       });
     },
   });
+
+  console.log(typeof data);
 
   const handleYoloTrain = () => {
     mutationYolo.mutate({
@@ -112,7 +116,7 @@ const PrintLog = () => {
 
   const mutationTrOCR = useMutation({
     mutationFn: (newData: trainData) => {
-      return fetch(`http://122.47.121.165:8080/trocr_train`, {
+      return fetch(`http://122.47.121.165:8070/trocr_train`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -133,7 +137,7 @@ const PrintLog = () => {
 
   const mutationStopYolo = useMutation({
     mutationFn: () => {
-      return fetch(`http://122.47.121.165:8080/stop_yolo_train`, {
+      return fetch(`http://122.47.121.165:8070/stop_yolo_train`, {
         method: "POST",
       });
     },
@@ -141,7 +145,7 @@ const PrintLog = () => {
 
   const mutationStopOcr = useMutation({
     mutationFn: () => {
-      return fetch(`http://122.47.121.165:8080/stop_trocr_train`, {
+      return fetch(`http://122.47.121.165:8070/stop_trocr_train`, {
         method: "POST",
       });
     },
@@ -166,6 +170,14 @@ const PrintLog = () => {
               }}
             >
               학습일시중지
+            </Button>
+            <Button
+              onClick={() => {
+                setCallLog(callLog + 1);
+                console.log(data);
+              }}
+            >
+              로그 출력
             </Button>
           </ButtonBox>
         </Curtain>
