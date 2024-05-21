@@ -57,9 +57,6 @@ const FileUpload = () => {
     mutationFn: () => {
       return fetch(`http://122.47.121.165:8070/upload`, {
         method: "POST",
-        headers: {
-          "content-type": "multipart/form-data",
-        },
         body: fileData,
       });
     },
@@ -86,6 +83,7 @@ const FileUpload = () => {
     for (var key of formData.keys()) {
       console.log(key);
     }
+    console.log(e.target.fileInput.files[0]);
 
     setFileDataName(getValues("fileInput")?.[0]?.name);
     setWorkState(1);
