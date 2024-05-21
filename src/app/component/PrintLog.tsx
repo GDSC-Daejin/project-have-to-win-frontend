@@ -12,7 +12,7 @@ import {
   workStateAtom,
 } from "./atom";
 import { ButtonCSS } from "./componentCSS";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface trainData {
   epochs: number;
@@ -103,7 +103,30 @@ const PrintLog = () => {
     },
   });
 
-  console.log(typeof data);
+  // console.log("sia", typeof data, data);
+
+  const [logs, setLogs] = useState([]);
+
+  useEffect(() => {
+    const eventSource = new EventSource(
+      "http://122.47.121.165:8070/stream_logs"
+    );
+
+    eventSource.onmessage = function (event) {
+      setLogs((logs) => [...logs, event.data]);
+    };
+
+    eventSource.onerror = function (err) {
+      // console.error("EventSource failed:", err);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
+  // console.log(logs);
 
   const handleYoloTrain = () => {
     mutationYolo.mutate({
@@ -160,7 +183,7 @@ const PrintLog = () => {
             배치크기: {batch + " "}
             학습률: {lr0}
           </Option>
-          <LogBox>{data}</LogBox>
+          <LogBox>{logs}</LogBox>
           <ButtonBox>
             <Button
               onClick={() => {
