@@ -35,7 +35,7 @@ const SelectModel = () => {
 
   const mutationYolo = useMutation({
     mutationFn: (newData: trainData) => {
-      return fetch(`http://122.47.121.165:8070/yolo_train2`, {
+      return fetch(`http://122.47.121.165:8070/yolo_train`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const SelectModel = () => {
 
   const mutationTrOCR = useMutation({
     mutationFn: (newData: trainData) => {
-      return fetch(`http://122.47.121.165:8070/trocr_train2`, {
+      return fetch(`http://122.47.121.165:8070/trocr_train`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
