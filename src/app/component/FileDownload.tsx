@@ -53,7 +53,7 @@ const FileDownload = () => {
     queryKey: ["download"],
     queryFn: async () => {
       return await fetch(
-        `http://122.47.121.165:8070/download?fileName=${fileName}`
+        `http://122.47.121.165:8070/download?file_path=${fileName}`
       );
     },
     enabled: !!downloadStart,
@@ -64,7 +64,7 @@ const FileDownload = () => {
     downloadData != undefined && setWorkState(0);
   }, [downloadData]);
 
-  // console.log(bestFileArr, "downloadData", downloadData);
+  console.log(bestFileArr, "downloadData", downloadData);
 
   return (
     <div>
