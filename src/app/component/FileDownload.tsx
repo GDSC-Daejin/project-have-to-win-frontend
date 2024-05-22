@@ -104,7 +104,9 @@ const FileDownload = () => {
       )}
       {curtainType && fileName != "" && (
         <CurtainBox>
-          <Button disabled={}>다운로드중...</Button>
+          <Button disabled={curtainType && fileName != ""}>
+            다운로드중...
+          </Button>
         </CurtainBox>
       )}
     </div>
