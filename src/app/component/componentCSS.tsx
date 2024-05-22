@@ -131,6 +131,9 @@ export const Button = styled.button`
     border: none;
   }
   &:disabled {
+    background-color: lightgray;
+    color: white;
+    border-color: white;
   }
 `;
 
