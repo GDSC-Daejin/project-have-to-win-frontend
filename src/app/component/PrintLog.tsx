@@ -179,7 +179,7 @@ const PrintLog = () => {
       {workState === 4 && (
         <Curtain>
           <Option>
-            에폭시: {epochs + " "}
+            에포크: {epochs + " "}
             배치크기: {batch + " "}
             학습률: {lr0}
           </Option>
