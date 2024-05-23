@@ -5,7 +5,7 @@ import { Button, Container, ContainerPadding, Curtain } from "./componentCSS";
 import { GoDownload } from "react-icons/go";
 import { workStateAtom } from "./atom";
 import { useRecoilState } from "recoil";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
 
 interface filesType {
@@ -30,10 +30,11 @@ const FileDownload = () => {
   const [hoverState, setHoverState] = useState("block");
   const [bestFileArr, setBestFileArr] = useState<Array<string>>();
   const [curtainType, setCurtainType] = useState(false);
-  const [downloadStart, setDownloadStart] = useState(false);
   const [fileName, setFileName] = useState("");
 
   const [workState, setWorkState] = useRecoilState(workStateAtom);
+
+  const queryClient = useQueryClient();
 
   const { data } = useQuery<filesType>({
     queryKey: ["files"],
@@ -43,28 +44,36 @@ const FileDownload = () => {
   });
 
   useEffect(() => {
-    typeof data == "object" &&
+    if (data && typeof data === "object") {
       setBestFileArr(
-        data?.files?.filter((ele) => ele.search(/\\best.pt/) !== -1)
+        data.files.filter((ele) => ele.includes("\\best.pt"))
       );
+    }
   }, [data]);
 
-  const { data: downloadData } = useQuery({
-    queryKey: ["download"],
-    queryFn: async () => {
-      return await fetch(
-        `http://122.47.121.165:8070/download?file_path=${fileName}`
-      );
-    },
-    enabled: !!downloadStart,
-  });
+  const startDownload = async (filePath: string) => {
+    setCurtainType(false);
+    setWorkState(0);
 
-  useEffect(() => {
-    downloadData != undefined && setCurtainType(false);
-    downloadData != undefined && setWorkState(0);
-  }, [downloadData]);
+    const response = await fetch(`http://122.47.121.165:8070/download?file_path=${filePath}`);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = filePath;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
-  console.log(bestFileArr, "downloadData", downloadData);
+  const handleDownloadClick = (file: string) => {
+    setFileName(file);
+    setCurtainType(true);
+    startDownload(file);
+  };
+
+  console.log(bestFileArr, "fileName", fileName);
 
   return (
     <div>
@@ -85,26 +94,20 @@ const FileDownload = () => {
           />
         )}
       </Container>
-      {curtainType && fileName == "" && (
+      {curtainType && fileName === "" && (
         <CurtainBox>
           {bestFileArr?.map((ele, index) => (
             <div key={index}>
-              <Button
-                onClick={() => {
-                  setFileName(ele);
-                  setDownloadStart(true);
-                  downloadData;
-                }}
-              >
+              <Button onClick={() => handleDownloadClick(ele)}>
                 {ele}
               </Button>
             </div>
           ))}
         </CurtainBox>
       )}
-      {curtainType && fileName != "" && (
+      {curtainType && fileName !== "" && (
         <CurtainBox>
-          <Button disabled={curtainType && fileName != ""}>
+          <Button disabled>
             다운로드중...
           </Button>
         </CurtainBox>
